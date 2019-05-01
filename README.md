@@ -88,10 +88,10 @@ triplet_network.compile(loss='binary_crossentropy', optimizer=keras.optimizers.a
 
 - Train the model
 ```python
-triplet_network.fit_generator(x_train, y_train,
-                              x_test, y_test,
-                              batch_size=1000,
-                              epochs=epochs)
+triplet_network.fit(x_train, y_train,
+                    validation_data=(x_test, y_test),
+                    batch_size=64,
+                    epochs=epochs)
 ```
 
 ## Development Environment

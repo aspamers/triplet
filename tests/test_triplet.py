@@ -62,16 +62,16 @@ def test_siamese():
     triplet_network.compile(loss='binary_crossentropy', optimizer=keras.optimizers.adam())
 
     # Evaluate network before training to establish a baseline
-    score_before = triplet_network.evaluate_generator(x_train, y_train, num_triplets=64)
+    score_before = triplet_network.evaluate(x_train, y_train, batch_size=64)
 
     # Train network
-    triplet_network.fit_generator(x_train, y_train,
-                                  x_test, y_test,
-                                  num_triplets=64,
-                                  epochs=epochs)
+    triplet_network.fit(x_train, y_train,
+                        validation_data=(x_test, y_test),
+                        batch_size=64,
+                        epochs=epochs)
 
     # Evaluate network
-    score_after = triplet_network.evaluate_generator(x_train, y_train, num_triplets=64)
+    score_after = triplet_network.evaluate(x_train, y_train, batch_size=64)
 
     # Ensure that the training loss score improved as a result of the training
     assert(score_before < score_after)

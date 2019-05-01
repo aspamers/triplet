@@ -104,12 +104,11 @@ triplet_callbacks = [
     ModelCheckpoint(triplet_checkpoint_path, monitor='val_acc', save_best_only=True, verbose=0)
 ]
 
-triplet_network.fit_generator(x_train, y_train,
-                              x_test, y_test,
-                              batch_size=1000,
-                              epochs=epochs,
-                              callbacks=triplet_callbacks,
-                              max_queue_size=20)
+triplet_network.fit(x_train, y_train,
+                    validation_data=(x_test, y_test),
+                    batch_size=1000,
+                    epochs=epochs,
+                    callbacks=triplet_callbacks)
 
 triplet_network.load_weights(triplet_checkpoint_path)
 embedding = base_model.outputs[-1]

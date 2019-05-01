@@ -58,6 +58,26 @@ class TripletNetwork:
         """
         self.triplet_model.compile(*args, **kwargs)
 
+    def fit(self, *args, **kwargs):
+        """
+        Trains the model on data generated batch-by-batch using the triplet network generator function.
+
+        Redirects arguments to the fit_generator function.
+        """
+        x_train = args[0]
+        y_train = args[1]
+        x_test, y_test = kwargs.pop('validation_data')
+        batch_size = kwargs.pop('batch_size')
+
+        train_generator = self.__triplet_generator(x_train, y_train, batch_size)
+        train_steps = len(x_train) / batch_size
+        test_generator = self.__triplet_generator(x_test, y_test, batch_size)
+        test_steps = len(x_test) / batch_size
+        self.triplet_model.fit_generator(train_generator,
+                                         steps_per_epoch=train_steps,
+                                         validation_data=test_generator,
+                                         validation_steps=test_steps, **kwargs)
+
     def fit_generator(self, x_train, y_train, x_test, y_test, batch_size, *args, **kwargs):
         """
         Trains the model on data generated batch-by-batch using the triplet network generator function.
@@ -86,18 +106,35 @@ class TripletNetwork:
         """
         self.triplet_model.load_weights(checkpoint_path)
 
-    def evaluate_generator(self, x, y, num_triplets, *args, **kwargs):
+    def evaluate(self, *args, **kwargs):
+        """
+        Evaluate the triplet network with the same generator that is used to train it. Passes arguments through to the
+        underlying Keras function so that callbacks etc can be used.
+
+        Redirects arguments to the evaluate_generator function.
+
+        :return: A tuple of scores
+        """
+        x = args[0]
+        y = args[1]
+        batch_size = kwargs.pop('batch_size')
+
+        generator = self.__triplet_generator(x, y, batch_size)
+        steps = len(x) / batch_size
+        return self.triplet_model.evaluate_generator(generator, steps=steps, **kwargs)
+
+    def evaluate_generator(self, x, y, batch_size, *args, **kwargs):
         """
         Evaluate the triplet network with the same generator that is used to train it. Passes arguments through to the
         underlying Keras function so that callbacks etc can be used.
 
         :param x: Input data
         :param y: Class labels
-        :param num_triplets: Number of triplets to generate per batch.
+        :param batch_size: Number of triplets to generate per batch.
         :return: A tuple of scores
         """
-        generator = self.__triplet_generator(x, y, num_triplets)
-        steps = len(x) / num_triplets
+        generator = self.__triplet_generator(x, y, batch_size)
+        steps = len(x) / batch_size
         return self.triplet_model.evaluate_generator(generator, steps=steps, *args, **kwargs)
 
     def __initialize_triplet_model(self):
