@@ -70,9 +70,9 @@ class TripletNetwork:
         batch_size = kwargs.pop('batch_size')
 
         train_generator = self.__triplet_generator(x_train, y_train, batch_size)
-        train_steps = len(x_train) / batch_size
+        train_steps = max(len(x_train) / batch_size, 1)
         test_generator = self.__triplet_generator(x_test, y_test, batch_size)
-        test_steps = len(x_test) / batch_size
+        test_steps = max(len(x_test) / batch_size, 1)
         self.triplet_model.fit_generator(train_generator,
                                          steps_per_epoch=train_steps,
                                          validation_data=test_generator,
@@ -89,9 +89,9 @@ class TripletNetwork:
         :param batch_size: Number of triplets to generate per batch.
         """
         train_generator = self.__triplet_generator(x_train, y_train, batch_size)
-        train_steps = len(x_train) / batch_size
+        train_steps = max(len(x_train) / batch_size, 1)
         test_generator = self.__triplet_generator(x_test, y_test, batch_size)
-        test_steps = len(x_test) / batch_size
+        test_steps = max(len(x_test) / batch_size, 1)
         self.triplet_model.fit_generator(train_generator,
                                          steps_per_epoch=train_steps,
                                          validation_data=test_generator,
