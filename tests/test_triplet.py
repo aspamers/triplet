@@ -18,7 +18,7 @@ def test_siamese():
 
     num_classes = 5
     input_shape = (3,)
-    epochs = 10
+    epochs = 1000
 
     # Generate some data
     x_train = np.random.rand(100, 3)
@@ -74,4 +74,4 @@ def test_siamese():
     score_after = triplet_network.evaluate(x_train, y_train, batch_size=64)
 
     # Ensure that the training loss score improved as a result of the training
-    assert(score_before < score_after)
+    assert(score_before > score_after)
