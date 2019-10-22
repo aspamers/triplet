@@ -1,4 +1,4 @@
-version: '3'
+version: '2.3'
 services:
   devcontainer:
   
@@ -13,5 +13,6 @@ services:
       - ..:/workspace
       - ~/.gitconfig:/home/containeruser/.gitconfig
       - ~/.ssh:/home/containeruser/.ssh
+    runtime: nvidia
 
     command: sleep infinity 
